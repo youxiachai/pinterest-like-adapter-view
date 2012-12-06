@@ -1,4 +1,4 @@
-package com.huewu.pla.lib.extra;
+package com.huewu.pla.lib;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,11 +18,10 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.huewu.pla.lib.MultiColumnListView;
+import com.huewu.pla.lib.internal.PLA_AbsListView;
 import com.huewu.pla.smaple.R;
 
 /**
@@ -67,7 +66,14 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		/**
 		 * Method to be called when a refresh is requested
 		 */
-		public void onRefresh();
+		void onRefresh();
+	}
+	
+	public interface OnLoadMoreListener{
+		/**
+		 * Method to be called when a load more is requested
+		 */
+		void onLoadmore();
 	}
 
 	private static int measuredHeaderHeight;
@@ -82,21 +88,23 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 	private String  lastUpdatedText;
 	private SimpleDateFormat lastUpdatedDateFormat = new SimpleDateFormat("dd/MM HH:mm");
 
-	private float                   previousY;
-	private int                     headerPadding;
-	private boolean                 hasResetHeader;
-	private long                    lastUpdated = -1;
+	private float                  previousY;
+	private int                    headerPadding;
+	private boolean                hasResetHeader;
+	private long                   lastUpdated = -1;
 	private State                   state;
 	private LinearLayout            headerContainer;
 	private RelativeLayout          header;
 	private RotateAnimation         flipAnimation;
 	private RotateAnimation         reverseFlipAnimation;
+	private RotateAnimation         refreshingAnimation;
 	private ImageView               image;
-	private ProgressBar             spinner;
+	private View             		 refreshingIcon;
 	private TextView                text;
 	private TextView                lastUpdatedTextView;
 	private OnRefreshListener       onRefreshListener;
-	private TranslateAnimation		bounceAnimation;
+	private OnLoadMoreListener      onLoadmoreListener;
+	private TranslateAnimation		 bounceAnimation;
 
 	public MultiColumnPullToRefreshListView(Context context){
 		super(context);
@@ -122,6 +130,30 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 	public void setOnRefreshListener(OnRefreshListener onRefreshListener){
 		this.onRefreshListener = onRefreshListener;
 	}
+	
+	public void setOnLoadMoreListener(OnLoadMoreListener listener){
+		this.onLoadmoreListener = listener;
+		if(listener != null){
+			this.setOnScrollListener(new OnScrollListener() {
+				
+				@Override
+				public void onScrollStateChanged(PLA_AbsListView view, int scrollState) {
+                    if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
+                        if(view.getLastVisiblePosition()==(view.getCount()-1) && 
+                        		loadingMoreComplete ){
+                        		onLoadmoreListener.onLoadmore();
+                        		loadingMoreComplete = false;
+                        }
+                    }
+				}
+				
+				@Override
+				public void onScroll(PLA_AbsListView view, int firstVisibleItem,
+						int visibleItemCount, int totalItemCount) {
+				}
+			});
+		}
+	}
 
 	/**
 	 * @return If the list is in 'Refreshing' state
@@ -129,7 +161,7 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 	public boolean isRefreshing(){
 		return state == State.REFRESHING;
 	}
-
+	
 	/**
 	 * Default is false. When lockScrollWhileRefreshing is set to true, the list
 	 * cannot scroll when in 'refreshing' mode. It's 'locked' on refreshing.
@@ -183,6 +215,12 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		resetHeader();
 		lastUpdated = System.currentTimeMillis();
 	}
+	
+	private boolean loadingMoreComplete = true;
+	
+	public void onLoadMoreComplete(){
+		loadingMoreComplete = true;
+	}
 
 	/**
 	 * Change the label text on state 'Pull to Refresh'
@@ -228,7 +266,7 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		text = (TextView) header.findViewById(R.id.ptr_id_text);
 		lastUpdatedTextView = (TextView) header.findViewById(R.id.ptr_id_last_updated);
 		image = (ImageView) header.findViewById(R.id.ptr_id_image);
-		spinner = (ProgressBar) header.findViewById(R.id.ptr_id_spinner);
+		refreshingIcon = header.findViewById(R.id.ptr_id_spinner);
 
 		pullToRefreshText = getContext().getString(R.string.ptr_pull_to_refresh);
 		releaseToRefreshText = getContext().getString(R.string.ptr_release_to_refresh);
@@ -244,7 +282,13 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		reverseFlipAnimation.setInterpolator(new LinearInterpolator());
 		reverseFlipAnimation.setDuration(ROTATE_ARROW_ANIMATION_DURATION);
 		reverseFlipAnimation.setFillAfter(true);
-
+		
+		refreshingAnimation = new RotateAnimation(0, 720, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+		refreshingAnimation.setDuration(1200);
+		refreshingAnimation.setInterpolator(new LinearInterpolator());
+		refreshingAnimation.setRepeatCount(Integer.MAX_VALUE);
+		refreshingAnimation.setRepeatMode(Animation.RESTART);
+		
 		addHeaderView(headerContainer);
 		setState(State.PULL_TO_REFRESH);
 		scrollbarEnabled = isVerticalScrollBarEnabled();
@@ -264,9 +308,9 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		header.setLayoutParams(mlp);
 	}
 	
-	private boolean isPulling = false;
-	private boolean isPull(MotionEvent event){
-		return isPulling;
+	private boolean enablePulling = true;
+	private boolean enablePull(MotionEvent event){
+		return enablePulling;
 	}
 	
 	@Override
@@ -283,15 +327,15 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if( getFirstVisiblePosition() == 0 && event.getY() - previousY > 0 ) {
-				isPulling = true;
+				enablePulling = true;
 				return true;
 			}else{
-				isPulling = false;
+				enablePulling = false;
 			}
 			break;
 		case MotionEvent.ACTION_CANCEL:
 		case MotionEvent.ACTION_UP:
-			isPulling = false;
+			enablePulling = false;
 			break;
 		}
 		
@@ -308,7 +352,7 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		switch(event.getAction()){
 
 		case MotionEvent.ACTION_UP:
-			if(isPull(event) && (state == State.RELEASE_TO_REFRESH || getFirstVisiblePosition() == 0)){
+			if(enablePull(event) && (state == State.RELEASE_TO_REFRESH || getFirstVisiblePosition() == 0)){
 				switch(state){
 				case RELEASE_TO_REFRESH:
 					setState(State.REFRESHING);
@@ -324,7 +368,7 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 			break;
 
 		case MotionEvent.ACTION_MOVE:
-			if(isPull(event)){
+			if(enablePull(event)){
 				float y = event.getY();
 				float diff = y - previousY;
 				if(diff > 0) diff /= PULL_RESISTANCE;
@@ -390,7 +434,8 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 	}
 
 	private void setUiRefreshing(){
-		spinner.setVisibility(View.VISIBLE);
+		refreshingIcon.setVisibility(View.VISIBLE);
+		refreshingIcon.startAnimation(refreshingAnimation);
 		image.clearAnimation();
 		image.setVisibility(View.INVISIBLE);
 		text.setText(refreshingText);
@@ -400,7 +445,7 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		this.state = state;
 		switch(state){
 		case PULL_TO_REFRESH:
-			spinner.setVisibility(View.INVISIBLE);
+			refreshingIcon.setVisibility(View.INVISIBLE);
 			image.setVisibility(View.VISIBLE);
 			text.setText(pullToRefreshText);
 
@@ -412,7 +457,7 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 			break;
 
 		case RELEASE_TO_REFRESH:
-			spinner.setVisibility(View.INVISIBLE);
+			refreshingIcon.setVisibility(View.INVISIBLE);
 			image.setVisibility(View.VISIBLE);
 			text.setText(releaseToRefreshText);
 			break;
@@ -430,6 +475,9 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 			break;
 		}
 	}
+	
+	
+	
 
 	@Override
 	protected void onScrollChanged(int l, int t, int oldl, int oldt){
@@ -442,6 +490,7 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 
 			hasResetHeader = true;
 		}
+		
 	}
 
 	private class HeaderAnimationListener implements AnimationListener{
@@ -501,7 +550,6 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 
 	private class PTROnGlobalLayoutListener implements OnGlobalLayoutListener{
 
-		@SuppressWarnings("deprecation")
 		@Override
 		public void onGlobalLayout(){
 			int initialHeaderHeight = header.getHeight();

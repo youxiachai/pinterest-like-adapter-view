@@ -17,15 +17,16 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:src">@drawable/ic_launcher</item>
+        <item name="android:src">@drawable/default_ptr_rotate</item>
         <item name="android:layout_marginLeft">25dp</item>
     </style>
     
-    <style name="ptr_spinner" parent="@android:style/Widget.ProgressBar.Small">
+    <style name="ptr_spinner">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:indeterminate">true</item>
+        <item name="android:src">@drawable/default_ptr_rotate</item>
         <item name="android:layout_marginLeft">25dp</item>
     </style>
 

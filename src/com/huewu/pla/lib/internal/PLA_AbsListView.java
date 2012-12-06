@@ -892,7 +892,6 @@ ViewTreeObserver.OnGlobalLayoutListener, ViewTreeObserver.OnTouchModeChangeListe
 	 * 
 	 * @return A view displaying the data associated with the specified position
 	 */
-	@SuppressWarnings("deprecation")
 	View obtainView(int position, boolean[] isScrap) {
 		isScrap[0] = false;
 		View scrapView;
@@ -2220,7 +2219,6 @@ ViewTreeObserver.OnGlobalLayoutListener, ViewTreeObserver.OnTouchModeChangeListe
 	 * @param incrementalDeltaY Change in deltaY from the previous event.
 	 * @return true if we're already at the beginning/end of the list and have nothing to do.
 	 */
-	@SuppressWarnings("deprecation")
 	boolean trackMotionScroll(int deltaY, int incrementalDeltaY) {
 		final int childCount = getChildCount();
 		if (childCount == 0) {
@@ -2995,7 +2993,6 @@ ViewTreeObserver.OnGlobalLayoutListener, ViewTreeObserver.OnTouchModeChangeListe
 		/**
 		 * Move all views remaining in mActiveViews to mScrapViews.
 		 */
-		@SuppressWarnings("deprecation")
 		void scrapActiveViews() {
 			final View[] activeViews = mActiveViews;
 			final boolean hasListener = mRecyclerListener != null;

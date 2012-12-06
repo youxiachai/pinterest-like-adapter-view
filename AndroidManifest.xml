@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         
-        <activity android:name="com.huewu.pla.sample.extra.PullToRefreshSampleActivity"/>
+        <activity android:name="com.huewu.pla.sample.PullToRefreshSampleActivity"/>
         
     </application>
 

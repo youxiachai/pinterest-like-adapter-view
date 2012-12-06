@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry excluding="com/huewu/pla/lib/MultiColumnAdapterView.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="src" path="sample"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

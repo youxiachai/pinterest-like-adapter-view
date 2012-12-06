@@ -1067,7 +1067,6 @@ public class PLA_ListView extends PLA_AbsListView {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void layoutChildren() {
 		final boolean blockLayoutRequests = mBlockLayoutRequests;
@@ -1285,7 +1284,6 @@ public class PLA_ListView extends PLA_AbsListView {
 	 * @param selected Is this position selected?
 	 * @return View that was added
 	 */
-	@SuppressWarnings("deprecation")
 	private View makeAndAddView(int position, int childrenBottomOrTop, boolean flow,
 			boolean selected) {
 		View child;

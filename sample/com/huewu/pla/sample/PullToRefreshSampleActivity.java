@@ -7,17 +7,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
-import com.huewu.pla.lib.MultiColumnListView;
-import com.huewu.pla.lib.internal.PLA_AbsListView.LayoutParams;
-import com.huewu.pla.sample.extra.PullToRefreshSampleActivity;
+import com.huewu.pla.lib.MultiColumnPullToRefreshListView;
+import com.huewu.pla.lib.MultiColumnPullToRefreshListView.OnLoadMoreListener;
+import com.huewu.pla.lib.MultiColumnPullToRefreshListView.OnRefreshListener;
 import com.huewu.pla.smaple.R;
 
-public class SampleActivity extends Activity {
+public class PullToRefreshSampleActivity extends Activity {
 
 	private class MySimpleAdapter extends ArrayAdapter<String> {
 
@@ -26,41 +26,50 @@ public class SampleActivity extends Activity {
 		}
 	}
 
-	private MultiColumnListView mAdapterView = null;
+	private MultiColumnPullToRefreshListView mAdapterView = null;
 	private MySimpleAdapter mAdapter = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.act_sample);
-		//mAdapterView = (PLA_AdapterView<Adapter>) findViewById(R.id.list);
-
-		mAdapterView = (MultiColumnListView) findViewById(R.id.list);
-
-		{
-			for( int i = 0; i < 3; ++i ){
-				//add header view.
-				TextView tv = new TextView(this);
-				tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				tv.setText("Hello Header!! ........................................................................");
-				mAdapterView.addHeaderView(tv);
+		setContentView(R.layout.act_pull_to_refresh_sample);
+		mAdapterView = (MultiColumnPullToRefreshListView) findViewById(R.id.list);
+		
+		initAdapter();
+		mAdapterView.setAdapter(mAdapter);
+		
+		mAdapterView.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				//5秒后完成
+				new Handler().postDelayed(new Runnable(){
+					@Override
+					public void run() {
+						mAdapterView.onRefreshComplete();
+					}
+				}, 5000);
 			}
-		}
-		{
-			for( int i = 0; i < 3; ++i ){
-				//add footer view.
-				TextView tv = new TextView(this);
-				tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-				tv.setText("Hello Footer!! ........................................................................");
-				mAdapterView.addFooterView(tv);
+		});
+		
+		mAdapterView.setOnLoadMoreListener(new OnLoadMoreListener() {
+			@Override
+			public void onLoadmore() {
+				System.out.println(">>>>>>> load more <<<<<<<<<");
+				//5秒后完成
+				new Handler().postDelayed(new Runnable(){
+					@Override
+					public void run() {
+						mAdapterView.onLoadMoreComplete();
+					}
+				}, 5000);
 			}
-		}
+		});
+		
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(Menu.NONE, 1001, 0, "Load More Contents");
-		menu.add(Menu.NONE, 1002, 0, "Launch Pull-To-Refresh Activity");
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -94,14 +103,6 @@ public class SampleActivity extends Activity {
 		break;
 		}
 		return true;
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		initAdapter();
-		mAdapterView.setAdapter(mAdapter);
-		//mAdapterView.setAdapter(mAdapter);
 	}
 
 	private Random mRand = new Random();
