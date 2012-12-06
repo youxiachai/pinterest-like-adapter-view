@@ -5,49 +5,39 @@ PLA(PinterestLikeAdapterView)
 基于[PinterestLikeAdapterView](https://github.com/huewu/PinterestLikeAdapterView)开源项目的瀑布流控件。
 
 
-Screen Shot
+界面截图
 ----------------
-This is a screen shot of sample activity.
 
-![Screenshot](https://raw.github.com/chenyoca/pinterest-like-adapter-view/develop/screenshot_1.png)
+![Screenshot](https://raw.github.com/chenyoca/pinterest-like-adapter-view/develop/screenshot_2.png)
+![Screenshot](https://raw.github.com/chenyoca/pinterest-like-adapter-view/develop/screenshot_3.png)
+![Screenshot](https://raw.github.com/chenyoca/pinterest-like-adapter-view/develop/screenshot_4.png)
 
-How to use
+说明
 -------------
+ **非原创项目**，基于[PinterestLikeAdapterView](https://github.com/huewu/PinterestLikeAdapterView)开源项目的瀑布流控件。
 
-*To run Sample App.*
+ * 1、修正[PinterestLikeAdapterView](https://github.com/huewu/PinterestLikeAdapterView)下拉刷新的Bug。
+ * 2、添加到列表底部自动添加更多数据的接口：setLoadMoreListener(...)
 
-  1. clone project.
-
-  2. run on your android phone.
-
-  3. in option menu, you can add items or lunch pull-to-refresh sample.
-
-
-*To use Pinterest Like Multi Column View.*
-
-  1. check this project as library project.
-
-  2. MultiColumListView is the view what you need.
-
-*To use pull-to-refresh features.*
-  
-  1. check this project as library project.
-
-  2. MultiColumnPullToRefreshListView class in extra folder is what you need.
-
-Attributes
+特性
 -----------
-* **plaColumnNumber**
+ * **纯组件** 像原生ListView一样使用。
+  
+  > 类，就应该有其明确的职责。不要把无相关的功能都死命的往这个类里塞塞塞塞塞塞。
+  图片加载不是瀑布流组件的功能！
+  判断网络是否正常不是瀑布流组件的功能!
+  怎么创建瀑布流组件Item的View，也不是瀑布流组件的功能！
 
-	Number of column. (default value is 2)
+ * 自定义瀑布流列数
 
-* **plaLandscapeColumnNumber**
+ * 支持到列表底部自动加载更多数据
 
-	Number of column in landscape mode (the orientation that window's width is longer than height.)
+ * 支持下拉刷新：MultiColumnPullToRefreshListView
 
 ## License
 
     Copyright 2012 huewu.yang
+    Copyright 2012 chenyoca
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

@@ -3,24 +3,20 @@
     android:id="@+id/card_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="7dp"
-	android:orientation="vertical">
-    
-    <ImageView 
+    android:orientation="vertical"
+    android:padding="7dp" >
+
+    <ImageView
         android:id="@+id/thumbnail"
         android:layout_width="match_parent"
-        android:adjustViewBounds="true"
-        android:layout_height="wrap_content"/>
-    
-    <TextView 
-        android:id="@android:id/text1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    
-    <Button 
-        android:id="@+id/like"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Like"/>
+        android:gravity="center_horizontal"
+        android:padding="2dp"
+        android:textSize="11sp" />
 
 </LinearLayout>

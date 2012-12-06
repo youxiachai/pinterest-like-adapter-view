@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.huewu.pla.lib.internal.PLA_AbsListView;
 import com.huewu.pla.smaple.R;
 
 /**
@@ -69,13 +68,6 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		void onRefresh();
 	}
 	
-	public interface OnLoadMoreListener{
-		/**
-		 * Method to be called when a load more is requested
-		 */
-		void onLoadmore();
-	}
-
 	private static int measuredHeaderHeight;
 
 	private boolean scrollbarEnabled;
@@ -103,7 +95,6 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 	private TextView                text;
 	private TextView                lastUpdatedTextView;
 	private OnRefreshListener       onRefreshListener;
-	private OnLoadMoreListener      onLoadmoreListener;
 	private TranslateAnimation		 bounceAnimation;
 
 	public MultiColumnPullToRefreshListView(Context context){
@@ -131,30 +122,6 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		this.onRefreshListener = onRefreshListener;
 	}
 	
-	public void setOnLoadMoreListener(OnLoadMoreListener listener){
-		this.onLoadmoreListener = listener;
-		if(listener != null){
-			this.setOnScrollListener(new OnScrollListener() {
-				
-				@Override
-				public void onScrollStateChanged(PLA_AbsListView view, int scrollState) {
-                    if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
-                        if(view.getLastVisiblePosition()==(view.getCount()-1) && 
-                        		loadingMoreComplete ){
-                        		onLoadmoreListener.onLoadmore();
-                        		loadingMoreComplete = false;
-                        }
-                    }
-				}
-				
-				@Override
-				public void onScroll(PLA_AbsListView view, int firstVisibleItem,
-						int visibleItemCount, int totalItemCount) {
-				}
-			});
-		}
-	}
-
 	/**
 	 * @return If the list is in 'Refreshing' state
 	 */
@@ -216,12 +183,6 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		lastUpdated = System.currentTimeMillis();
 	}
 	
-	private boolean loadingMoreComplete = true;
-	
-	public void onLoadMoreComplete(){
-		loadingMoreComplete = true;
-	}
-
 	/**
 	 * Change the label text on state 'Pull to Refresh'
 	 *
@@ -434,10 +395,10 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 	}
 
 	private void setUiRefreshing(){
+		image.clearAnimation();
+		image.setVisibility(View.GONE);
 		refreshingIcon.setVisibility(View.VISIBLE);
 		refreshingIcon.startAnimation(refreshingAnimation);
-		image.clearAnimation();
-		image.setVisibility(View.INVISIBLE);
 		text.setText(refreshingText);
 	}
 
@@ -445,7 +406,7 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		this.state = state;
 		switch(state){
 		case PULL_TO_REFRESH:
-			refreshingIcon.setVisibility(View.INVISIBLE);
+			refreshingIcon.setVisibility(View.GONE);
 			image.setVisibility(View.VISIBLE);
 			text.setText(pullToRefreshText);
 

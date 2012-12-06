@@ -24,6 +24,7 @@ import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 
+import com.huewu.pla.lib.internal.PLA_AbsListView;
 import com.huewu.pla.lib.internal.PLA_ListView;
 import com.huewu.pla.smaple.R;
 
@@ -164,6 +165,10 @@ public class MultiColumnListView extends PLA_ListView {
 		super.onAdjustChildViews(down);
 	}
 
+	public int getColumnCount(){
+		return mColumnNumber;
+	}
+	
 	@Override
 	protected int getFillChildBottom() {
 		//return smallest bottom value.
@@ -417,5 +422,40 @@ public class MultiColumnListView extends PLA_ListView {
 		}
 
 	}//end of class
+	
+	private boolean loadingMoreComplete = true;
+	
+	public void onLoadMoreComplete(){
+		loadingMoreComplete = true;
+	}
+	
+	public interface OnLoadMoreListener{
+		/**
+		 * Method to be called when scroll to buttom is requested
+		 */
+		void onLoadMore();
+	}
+	
+	public void setOnLoadMoreListener(final OnLoadMoreListener listener){
+		if(listener != null){
+			this.setOnScrollListener(new OnScrollListener() {
+				@Override
+				public void onScrollStateChanged(PLA_AbsListView view, int scrollState) {
+                    if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
+                        if(view.getLastVisiblePosition()==(view.getCount()-1) && 
+                        		loadingMoreComplete ){
+                        		listener.onLoadMore();
+                        		loadingMoreComplete = false;
+                        }
+                    }
+				}
+				
+				@Override
+				public void onScroll(PLA_AbsListView view, int firstVisibleItem,
+						int visibleItemCount, int totalItemCount) {
+				}
+			});
+		}
+	}
 
 }//end of class
