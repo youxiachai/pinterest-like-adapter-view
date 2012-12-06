@@ -9,7 +9,7 @@ Screen Shot
 ----------------
 This is a screen shot of sample activity.
 
-![Example Image][1]
+![Screenshot](https://raw.github.com/chenyoca/pinterest-like-adapter-view/develop/screenshot_1.png)
 
 How to use
 -------------
@@ -60,5 +60,3 @@ Attributes
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
- [1]: http://cloud.github.com/downloads/huewu/PinterestLikeAdapterView/screenshot_1.png
