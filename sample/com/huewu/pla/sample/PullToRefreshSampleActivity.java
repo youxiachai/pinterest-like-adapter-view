@@ -1,27 +1,27 @@
 package com.huewu.pla.sample;
 
-import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
 
 import com.huewu.pla.lib.MultiColumnPullToRefreshListView;
 import com.huewu.pla.lib.MultiColumnPullToRefreshListView.OnRefreshListener;
-import com.huewu.pla.smaple.R;
+import com.huewu.pla.sample.internal.ImgResource;
 
 public class PullToRefreshSampleActivity extends SampleActivity {
 
 	private MultiColumnPullToRefreshListView mPulltoRefreshListView = null;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	protected void init() {
 		setContentView(R.layout.act_pull_to_refresh_sample);
 		mPulltoRefreshListView = (MultiColumnPullToRefreshListView) findViewById(R.id.list);
-		
-		initAdapter();
-		mPulltoRefreshListView.setAdapter(mAdapter);
+		mWaterfallView = mPulltoRefreshListView;
+		initUIAction();
 		mPulltoRefreshListView.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {
+				mAdapter.update(ImgResource.genData());
+				mAdapter.notifyDataSetInvalidated();
 				//5秒后完成
 				new Handler().postDelayed(new Runnable(){
 					@Override
@@ -31,6 +31,11 @@ public class PullToRefreshSampleActivity extends SampleActivity {
 				}, 5000);
 			}
 		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return false;
 	}
 
 }//end of class

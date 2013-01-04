@@ -37,7 +37,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 
-import com.huewu.pla.smaple.R;
+import com.huewu.pla.sample.R;
 
 /*
  * Implementation Notes:
@@ -802,7 +802,6 @@ public class PLA_ListView extends PLA_AbsListView {
 	 *         UNSPECIFIED/AT_MOST modes, false otherwise.
 	 * @hide
 	 */
-	@ViewDebug.ExportedProperty(category = "list")
 	protected boolean recycleOnMeasure() {
 		return true;
 	}

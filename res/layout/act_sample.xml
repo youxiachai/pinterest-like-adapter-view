@@ -10,7 +10,6 @@
         android:layout_height="match_parent" 
         pla:plaColumnNumber="2"
         pla:plaLandscapeColumnNumber="3"
-        >
-    </com.huewu.pla.lib.MultiColumnListView>
+        />
 
 </merge>

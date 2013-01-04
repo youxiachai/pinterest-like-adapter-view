@@ -21,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.huewu.pla.smaple.R;
+import com.huewu.pla.sample.R;
 
 /**
  * A generic, customizable Android ListView implementation that has 'Pull to Refresh' functionality.
@@ -239,12 +239,14 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		flipAnimation.setDuration(ROTATE_ARROW_ANIMATION_DURATION);
 		flipAnimation.setFillAfter(true);
 
-		reverseFlipAnimation = new RotateAnimation(-180, 0, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+		reverseFlipAnimation = new RotateAnimation(-180, 0, 
+				RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
 		reverseFlipAnimation.setInterpolator(new LinearInterpolator());
 		reverseFlipAnimation.setDuration(ROTATE_ARROW_ANIMATION_DURATION);
 		reverseFlipAnimation.setFillAfter(true);
 		
-		refreshingAnimation = new RotateAnimation(0, 720, RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+		refreshingAnimation = new RotateAnimation(0, 720, 
+				RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
 		refreshingAnimation.setDuration(1200);
 		refreshingAnimation.setInterpolator(new LinearInterpolator());
 		refreshingAnimation.setRepeatCount(Integer.MAX_VALUE);
@@ -375,12 +377,13 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 				bounceAnimation.setFillEnabled(true);
 				bounceAnimation.setFillAfter(false);
 				bounceAnimation.setFillBefore(true);
-				//bounceAnimation.setInterpolator(new OvershootInterpolator(BOUNCE_OVERSHOOT_TENSION));
+//				bounceAnimation.setInterpolator(new OvershootInterpolator(BOUNCE_OVERSHOOT_TENSION));
 				bounceAnimation.setAnimationListener(new HeaderAnimationListener(yTranslate));
 				startAnimation(bounceAnimation);
 	}
 
 	private void resetHeader(){
+		
 		if(getFirstVisiblePosition() > 0){
 			setHeaderPadding(-header.getHeight());
 			setState(State.PULL_TO_REFRESH);
@@ -401,31 +404,37 @@ public class MultiColumnPullToRefreshListView extends MultiColumnListView {
 		refreshingIcon.startAnimation(refreshingAnimation);
 		text.setText(refreshingText);
 	}
+	
+	private void stopRefreshing(){
+		refreshingIcon.clearAnimation();
+		refreshingIcon.setVisibility(View.GONE);
+	}
 
 	private void setState(State state){
 		this.state = state;
 		switch(state){
 		case PULL_TO_REFRESH:
-			refreshingIcon.setVisibility(View.GONE);
+			stopRefreshing();
 			image.setVisibility(View.VISIBLE);
 			text.setText(pullToRefreshText);
 
 			if(showLastUpdatedText && lastUpdated != -1){
 				lastUpdatedTextView.setVisibility(View.VISIBLE);
-				lastUpdatedTextView.setText(String.format(lastUpdatedText, lastUpdatedDateFormat.format(new Date(lastUpdated))));
+				lastUpdatedTextView.setText(String.format(lastUpdatedText, 
+						lastUpdatedDateFormat.format(new Date(lastUpdated))));
 			}
 
 			break;
 
 		case RELEASE_TO_REFRESH:
-			refreshingIcon.setVisibility(View.INVISIBLE);
+			stopRefreshing();
 			image.setVisibility(View.VISIBLE);
 			text.setText(releaseToRefreshText);
+			
 			break;
 
 		case REFRESHING:
 			setUiRefreshing();
-
 			lastUpdated = System.currentTimeMillis();
 			if(onRefreshListener == null){
 				setState(State.PULL_TO_REFRESH);

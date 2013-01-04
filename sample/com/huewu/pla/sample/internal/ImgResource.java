@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.huewu.pla.smaple.R;
+import com.huewu.pla.sample.R;
 
 /**
  * @author : 桥下一粒砂

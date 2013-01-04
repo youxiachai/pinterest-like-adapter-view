@@ -4,10 +4,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
 
-import com.huewu.pla.smaple.R;
+import com.huewu.pla.sample.R;
 import com.lurencun.android.adapter.ViewBuilder;
 
 /**
