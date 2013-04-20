@@ -7,15 +7,7 @@ PLA(PinterestLikeAdapterView)
 基于[PinterestLikeAdapterView](https://github.com/huewu/PinterestLikeAdapterView)开源项目的瀑布流控件。
 
 
-界面截图
-----------------
 
-![Screenshot](https://raw.github.com/chenyoca/pinterest-like-adapter-view/develop/screenshot_2.png)
-![Screenshot](https://raw.github.com/chenyoca/pinterest-like-adapter-view/develop/screenshot_3.png)
-![Screenshot](https://raw.github.com/chenyoca/pinterest-like-adapter-view/develop/screenshot_4.png)
-
-说明
--------------
  **非原创项目**，基于[PinterestLikeAdapterView](https://github.com/huewu/PinterestLikeAdapterView)开源项目的瀑布流控件。
 
  * 1、修正[PinterestLikeAdapterView](https://github.com/huewu/PinterestLikeAdapterView)下拉刷新的Bug。
