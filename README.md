@@ -2,6 +2,8 @@ PLA(PinterestLikeAdapterView)
 ==================================
 -
 
+修复了setloadmorelistener 的bug
+
 基于[PinterestLikeAdapterView](https://github.com/huewu/PinterestLikeAdapterView)开源项目的瀑布流控件。
 
 
@@ -18,6 +20,8 @@ PLA(PinterestLikeAdapterView)
 
  * 1、修正[PinterestLikeAdapterView](https://github.com/huewu/PinterestLikeAdapterView)下拉刷新的Bug。
  * 2、添加到列表底部自动添加更多数据的接口：setLoadMoreListener(...)
+  	
+
 
 特性
 -----------

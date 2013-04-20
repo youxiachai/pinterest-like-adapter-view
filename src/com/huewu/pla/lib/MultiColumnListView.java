@@ -471,7 +471,8 @@ public class MultiColumnListView extends PLA_ListView {
 				@Override
 				public void onScroll(PLA_AbsListView view, int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
-			        visibleLastIndex = firstVisibleItem + visibleItemCount - 1; 
+//			        visibleLastIndex = firstVisibleItem + visibleItemCount - 1; 
+			        visibleLastIndex = firstVisibleItem + visibleItemCount - OFFSET; 
 				}
 			});
 		}
